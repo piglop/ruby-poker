@@ -175,5 +175,10 @@ class TestTable < Test::Unit::TestCase
         end
       end
     end
+    
+    should "be collected on each hand" do
+      @table.expects(:collect_blinds).once.with()
+      @table.run_hand
+    end
   end
 end
