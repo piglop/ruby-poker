@@ -166,5 +166,14 @@ class TestTable < Test::Unit::TestCase
       assert_equal 1000 - @table.small_blind, @table.seats[@table.sb].chips
       assert_equal 1000 - @table.big_blind, @table.seats[@table.bb].chips
     end
+    
+    should "not be collected on non blind players" do
+      @table.collect_blinds
+      @table.seats.each do |seat|
+        if seat.player and seat != @table.seats[@table.sb] and seat != @table.seats[@table.bb]
+          assert_equal 1000, seat.chips
+        end
+      end
+    end
   end
 end
