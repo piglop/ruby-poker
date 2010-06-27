@@ -181,4 +181,30 @@ class TestTable < Test::Unit::TestCase
       @table.run_hand
     end
   end
+  
+  context "Table preflop" do
+    setup do
+      @table = Table.new(10, 1)
+      @table.sit(Player.new(5000), 1, 1000)
+      @table.sit(Player.new(5000), 3, 1000)
+      @table.sit(Player.new(5000), 5, 1000)
+      @table.sit(Player.new(5000), 7, 1000)
+      @table.sit(Player.new(5000), 9, 1000)
+    end
+    
+    should "ask players to play" do
+      betting_round = sequence('betting round')
+      
+      @table.action_order_preflop.each do |seat_index|
+        if seat_index == @table.bb
+          @table.seats[seat_index].player.expects(:play).never
+        else
+          @table.seats[seat_index].player.expects(:play).once.with(@table).returns(:fold).in_sequence(betting_round)
+        end
+      end
+      winners, best_hand = @table.run_hand
+      assert_equal nil, best_hand
+      assert_equal [@table.seats[@table.bb].player], winners
+    end
+  end
 end

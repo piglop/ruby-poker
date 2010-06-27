@@ -30,6 +30,19 @@ module RubyPoker::Simulation
 
     def run_hand
       deal_holes
+      
+      action_order_preflop.each do |seat_index|
+        seat = @seats[seat_index]
+        next unless seat.player
+        if seat.player.play(self) == :fold
+          seat.folded = true
+        end
+        active_seats = @seats.find_all { |seat| seat.player and !seat.folded }
+        if active_seats.size == 1
+          return active_seats.map { |seat| seat.player }, nil, nil
+        end
+      end
+      
       deal_flop
       deal_turn
       deal_river

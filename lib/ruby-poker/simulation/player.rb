@@ -6,5 +6,9 @@ module RubyPoker::Simulation
       @hand = nil
       @chips = chips
     end
+    
+    def play(table)
+      :call
+    end
   end
 end
