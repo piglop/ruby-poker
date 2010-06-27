@@ -2,6 +2,7 @@ module RubyPoker::Simulation
   class Table
     attr_accessor :seats, :button, :pot
     attr_accessor :flop, :turn, :river, :community
+    attr_accessor :small_blind, :big_blind
 
     def initialize(seats=10, seed=nil)
       @seats = []

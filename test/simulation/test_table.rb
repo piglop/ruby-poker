@@ -150,4 +150,21 @@ class TestTable < Test::Unit::TestCase
     end
 
   end
+  
+  context "Blinds" do
+    setup do
+      @table = Table.new(10, 1)
+      @table.sit(Player.new(5000), 1, 1000)
+      @table.sit(Player.new(5000), 3, 1000)
+      @table.sit(Player.new(5000), 5, 1000)
+      @table.sit(Player.new(5000), 7, 1000)
+      @table.sit(Player.new(5000), 9, 1000)
+    end
+    
+    should "be collected" do
+      @table.collect_blinds
+      assert_equal 1000 - @table.small_blind, @table.seats[@table.sb].chips
+      assert_equal 1000 - @table.big_blind, @table.seats[@table.bb].chips
+    end
+  end
 end
