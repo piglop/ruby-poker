@@ -84,7 +84,7 @@ class TestTable < Test::Unit::TestCase
       @table.deal_holes
       @table.seats.each { |seat|
         if seat.player
-          assert_equal(2, seat.player.hand.to_a.length)
+          assert_equal(2, seat.hand.to_a.length)
         end
       }
     end

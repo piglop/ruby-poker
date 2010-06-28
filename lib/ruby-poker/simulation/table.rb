@@ -66,11 +66,11 @@ module RubyPoker::Simulation
       @community = PokerHand.new
 
       action_order_preflop.each { |x|
-        @seats[x].player.hand = PokerHand.new
-        @seats[x].player.hand << @deck.deal
+        @seats[x].hand = PokerHand.new
+        @seats[x].hand << @deck.deal
       }
       action_order_preflop.each { |x|
-        @seats[x].player.hand << @deck.deal
+        @seats[x].hand << @deck.deal
       }
     end
 
@@ -99,8 +99,8 @@ module RubyPoker::Simulation
         unless s.player
           msg += "empty"
         else
-          if s.player.hand
-            holes = s.player.hand
+          if s.hand
+            holes = s.hand
             hand = PokerHand.new(@community.to_a + holes.to_a)
             rank = hand.rank_full
             msg += "#{holes} - #{rank} (#{hand.just_cards})"
@@ -119,7 +119,7 @@ module RubyPoker::Simulation
       #puts
       @seats.each { |seat|
         if seat.player
-          hand = PokerHand.new(seat.player.hand.to_a)
+          hand = PokerHand.new(seat.hand.to_a)
           hand << @community.to_a
           hands << hand
           unless best_hand
