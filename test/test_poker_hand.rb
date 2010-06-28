@@ -35,6 +35,11 @@ class TestPokerHand < Test::Unit::TestCase
       assert_equal(0, PokerHand.new('kc kd') <=> PokerHand.new('Kc Kd'))
       assert_equal(0, PokerHand.new('kc kd') <=> PokerHand.new('Kc KD'))
     end
+    
+    should "handle hands without space" do
+      assert_equal(0, PokerHand.new('KcKd') <=> PokerHand.new('Kc Kd'))
+      assert_equal(0, PokerHand.new('KcKd9d') <=> PokerHand.new('Kc Kd 9d'))
+    end
 
     # there are a lot of combinations that should be tested here. I will add more
     # troublesome cases as I think of them.

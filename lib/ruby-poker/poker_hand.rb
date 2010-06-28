@@ -22,7 +22,7 @@ class PokerHand
         end
       end
     elsif cards.respond_to?(:to_str)
-      cards.scan(/\S{2,3}/).map { |str| @hand << Card.new(str) }
+      cards.scan(/\S{2}/).map { |str| @hand << Card.new(str) }
     else
       @hand << cards
     end
