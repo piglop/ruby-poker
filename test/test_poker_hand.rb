@@ -40,6 +40,13 @@ class TestPokerHand < Test::Unit::TestCase
       assert_equal(0, PokerHand.new('KcKd') <=> PokerHand.new('Kc Kd'))
       assert_equal(0, PokerHand.new('KcKd9d') <=> PokerHand.new('Kc Kd 9d'))
     end
+    
+    should "raise a clear error with invalid cards" do
+      e = assert_raises(Card::Invalid) { PokerHand.new('Fc') }
+      assert_match /"Fc"/, e.message
+      e = assert_raises(Card::Invalid) { PokerHand.new('Tp') }
+      assert_match /"Tp"/, e.message
+    end
 
     # there are a lot of combinations that should be tested here. I will add more
     # troublesome cases as I think of them.
