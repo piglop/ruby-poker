@@ -354,14 +354,16 @@ class PokerHand
   #
   # The expression can be an array of expressions. In this case the method returns true if any expression matches.
   #
+  # This method only works on hands with 2 cards.
+  #
   #     PokerHand.new('Ah Ad').match? 'AA' # => true
   #     PokerHand.new('Ah Kd').match? 'AQ+' # => true
   #     PokerHand.new('Jc Qc').match? '89s+' # => true
   #     PokerHand.new('Ah Jd').match? %w( 22+ A6s+ AJ+ ) # => true
   #     PokerHand.new('Ah Td').match? %w( 22+ A6s+ AJ+ ) # => false
-  #     
+  #
   def match? expression
-    return false if @hand.empty?
+    raise "Hands with #{@hand.size} cards is not supported" unless @hand.size == 2
     
     if expression.is_a? Array
       return expression.any? { |e| match?(e) }

@@ -493,6 +493,20 @@ class TestPokerHand < Test::Unit::TestCase
       assert_hand_match '89o+', '9c Th'
       assert_hand_not_match '89o+', '9d Td'
     end
+    
+    [
+      %w(),
+      %w(Ac),
+      %w(Ac Kc Qc),
+      %w(Ac Kc Qc Jc Tc),
+    ].each do |cards|
+      should "raise an error if the number of cards is #{cards.size}" do
+        hand = PokerHand.new(cards)
+        assert_raises RuntimeError do
+          hand.match?('AA')
+        end
+      end
+    end
   end
 
 end
