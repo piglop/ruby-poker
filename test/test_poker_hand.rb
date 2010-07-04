@@ -377,47 +377,6 @@ class TestPokerHand < Test::Unit::TestCase
       assert_hand_not_match '56o', '5h 6h'
     end
     
-    should "match range" do
-      assert_hand_match 'QJ-8', 'Qc Jh'
-      assert_hand_match 'QJ-8', 'Qc Th'
-      assert_hand_match 'QJ-8', 'Qc 8h'
-      assert_hand_match 'AK-T', 'Ac Jc'
-    end
-    
-    should "not match range" do
-      assert_hand_not_match 'QJ-8', 'Qc 7h'
-      assert_hand_not_match 'QJ-8', 'Kc Th'
-      assert_hand_not_match 'QJ-8', 'Qc Kh'
-    end
-    
-    should "match suited range" do
-      assert_hand_match 'QJ-8s', 'Qc Jc'
-      assert_hand_match 'QJ-8s', 'Qh Th'
-      assert_hand_match 'QJ-8s', 'Qd 8d'
-      assert_hand_match 'AK-Ts', 'As Js'
-    end
-    
-    should "not match suited range" do
-      assert_hand_not_match 'QJ-8s', 'Qc Jh'
-      assert_hand_not_match 'QJ-8s', 'Qh Tc'
-      assert_hand_not_match 'QJ-8s', 'Qd 8s'
-      assert_hand_not_match 'AK-Ts', 'As Jh'
-    end
-    
-    should "match offsuit range" do
-      assert_hand_match 'QJ-8o', 'Qc Jh'
-      assert_hand_match 'QJ-8o', 'Qh Ts'
-      assert_hand_match 'QJ-8o', 'Qd 8c'
-      assert_hand_match 'AK-To', 'As Jd'
-    end
-    
-    should "not match offsuit range" do
-      assert_hand_not_match 'QJ-8o', 'Qc Jc'
-      assert_hand_not_match 'QJ-8o', 'Qh Th'
-      assert_hand_not_match 'QJ-8o', 'Qd 8d'
-      assert_hand_not_match 'AK-To', 'As Js'
-    end
-    
     should "match pair min" do
       assert_hand_match 'JJ+', 'Jc Js'
       assert_hand_match '66+', 'Qc Qh'

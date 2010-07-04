@@ -384,20 +384,6 @@ class PokerHand
       when 'o'
         face_match and !suited
       end
-    when /^(.)(.)-(.)(s|o|)/
-      base_face = Card.face_value($1)
-      start_face = Card.face_value($2)
-      end_face = Card.face_value($3)
-      suit_match = $4
-      face_match = (faces.first == base_face and faces.last <= start_face and faces.last >= end_face)
-      case suit_match
-      when ''
-        face_match
-      when 's'
-        face_match and suited
-      when 'o'
-        face_match and !suited
-      end
     when /^(.)(.)(s|o|)\+$/
       face1 = Card.face_value($1)
       face2 = Card.face_value($2)
@@ -418,7 +404,7 @@ class PokerHand
         face_match and !suited
       end
     else
-      error "Invalid match: #{expression}"
+      raise "Invalid match: #{expression}"
     end
   end
 
