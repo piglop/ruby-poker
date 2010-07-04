@@ -336,6 +336,30 @@ class PokerHand
     @@allow_duplicates
   end
   
+  # Checks whether the hand matches usual expressions like AA, AK, AJ+, 66+, AQs, AQo...
+  # 
+  # Valid expressions:
+  # * "AJ": Matches exact faces (in this case an Ace and a Jack), suited or not
+  # * "AJs": Same but suited only
+  # * "AJo": Same but offsuit only
+  # * "AJ+": Matches an Ace with any card >= Jack, suited or not
+  # * "AJs+": Same but suited only
+  # * "AJo+": Same but offsuit only
+  # * "JJ+": Matches any pair >= "JJ".
+  # * "8T+": Matches connectors (in this case with 1 gap : 8T, 9J, TQ, JK, QA)
+  # * "8Ts+": Same but suited only
+  # * "8To+": Same but offsuit only
+  #
+  # The order of the cards in the expression is important (8T+ is not the same as T8+), but the order of the cards in the hand is not ("AK" will match "Ad Kc" and "Kc Ad").
+  #
+  # The expression can be an array of expressions. In this case the method returns true if any expression matches.
+  #
+  #     PokerHand.new('Ah Ad').match? 'AA' # => true
+  #     PokerHand.new('Ah Kd').match? 'AQ+' # => true
+  #     PokerHand.new('Jc Qc').match? '89s+' # => true
+  #     PokerHand.new('Ah Jd').match? %w( 22+ A6s+ AJ+ ) # => true
+  #     PokerHand.new('Ah Td').match? %w( 22+ A6s+ AJ+ ) # => false
+  #     
   def match? expression
     return false if @hand.empty?
     
