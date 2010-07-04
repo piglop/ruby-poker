@@ -466,6 +466,17 @@ class TestPokerHand < Test::Unit::TestCase
         end
       end
     end
+    
+    should "raise an error with invalid expression" do
+      hand = PokerHand.new("Ac Kc")
+      assert_raises ArgumentError do
+        hand.match? "foo"
+      end
+
+      assert_raises ArgumentError do
+        hand.match? ""
+      end
+    end
   end
 
 end

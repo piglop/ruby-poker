@@ -374,6 +374,7 @@ class PokerHand
     if expression =~ /^(.)(.)(s|o|)(\+|)$/
       face1 = Card.face_value($1)
       face2 = Card.face_value($2)
+      raise ArgumentError, "Invalid expression: #{expression.inspect}" unless face1 and face2
       suit_match = $3
       plus = ($4 != "")
       
@@ -398,7 +399,7 @@ class PokerHand
         face_match and !suited
       end
     else
-      raise "Invalid match: #{expression}"
+      raise ArgumentError, "Invalid expression: #{expression.inspect}"
     end
   end
 
