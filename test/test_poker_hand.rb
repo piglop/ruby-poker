@@ -42,9 +42,9 @@ class TestPokerHand < Test::Unit::TestCase
     end
     
     should "raise a clear error with invalid cards" do
-      e = assert_raises(Card::Invalid) { PokerHand.new('Fc') }
+      e = assert_raises(ArgumentError) { PokerHand.new('Fc') }
       assert_match /"Fc"/, e.message
-      e = assert_raises(Card::Invalid) { PokerHand.new('Tp') }
+      e = assert_raises(ArgumentError) { PokerHand.new('Tp') }
       assert_match /"Tp"/, e.message
     end
 

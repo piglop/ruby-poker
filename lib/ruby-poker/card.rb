@@ -33,9 +33,6 @@ class Card
     end
   end
   
-  class Invalid < StandardError
-  end
-
   private
 
   def build_from_value(value)
@@ -47,9 +44,9 @@ class Card
   def build_from_face_suit(face, suit)
     suit.downcase!
     @face  = Card::face_value(face)
-    raise Invalid, "Invalid card: \"#{face}#{suit}\"" unless @face
+    raise ArgumentError, "Invalid card: \"#{face}#{suit}\"" unless @face
     @suit  = SUIT_LOOKUP[suit]
-    raise Invalid, "Invalid card: \"#{face}#{suit}\"" unless @suit
+    raise ArgumentError, "Invalid card: \"#{face}#{suit}\"" unless @suit
     @value = (@suit * FACES.size()) + (@face - 1)
   end
 
