@@ -330,4 +330,169 @@ class TestPokerHand < Test::Unit::TestCase
       end
     end
   end
+  
+
+  def assert_hand_match(expression, cards)
+    hand = PokerHand.new(cards)
+    assert hand.match?(expression), "#{cards} didn't match #{expression}"
+  end
+  
+  def assert_hand_not_match(expression, cards)
+    hand = PokerHand.new(cards)
+    assert !hand.match?(expression), "#{cards} did match #{expression}"
+  end
+  
+  context "matching expression" do
+    should "match two faces" do
+      assert_hand_match 'AA', 'Ah Ad'
+      assert_hand_match 'Q8', 'Qc 8d'
+    end
+
+    should "not match two faces" do
+      assert_hand_not_match 'T9', 'Tc 8s'
+      assert_hand_not_match 'QQ', 'Tc 8s'
+    end
+    
+    should "match unordered faces" do
+      assert_hand_match 'K7', '7c Ks'
+    end
+
+    should "match suited when suited" do
+      assert_hand_match 'Q8s', 'Qc 8c'
+      assert_hand_match '56s', '5h 6h'
+    end
+    
+    should "not match suited when offsuit" do
+      assert_hand_not_match 'Q8s', 'Qc 8d'
+      assert_hand_not_match '56s', '5h 6c'
+    end
+
+    should "match offsuit when offsuited" do
+      assert_hand_match 'Q8o', 'Qc 8h'
+      assert_hand_match '56o', '5h 6s'
+    end
+    
+    should "not match offsuit when suited" do
+      assert_hand_not_match 'Q8o', 'Qc 8c'
+      assert_hand_not_match '56o', '5h 6h'
+    end
+    
+    should "match range" do
+      assert_hand_match 'QJ-8', 'Qc Jh'
+      assert_hand_match 'QJ-8', 'Qc Th'
+      assert_hand_match 'QJ-8', 'Qc 8h'
+      assert_hand_match 'AK-T', 'Ac Jc'
+    end
+    
+    should "not match range" do
+      assert_hand_not_match 'QJ-8', 'Qc 7h'
+      assert_hand_not_match 'QJ-8', 'Kc Th'
+      assert_hand_not_match 'QJ-8', 'Qc Kh'
+    end
+    
+    should "match suited range" do
+      assert_hand_match 'QJ-8s', 'Qc Jc'
+      assert_hand_match 'QJ-8s', 'Qh Th'
+      assert_hand_match 'QJ-8s', 'Qd 8d'
+      assert_hand_match 'AK-Ts', 'As Js'
+    end
+    
+    should "not match suited range" do
+      assert_hand_not_match 'QJ-8s', 'Qc Jh'
+      assert_hand_not_match 'QJ-8s', 'Qh Tc'
+      assert_hand_not_match 'QJ-8s', 'Qd 8s'
+      assert_hand_not_match 'AK-Ts', 'As Jh'
+    end
+    
+    should "match offsuit range" do
+      assert_hand_match 'QJ-8o', 'Qc Jh'
+      assert_hand_match 'QJ-8o', 'Qh Ts'
+      assert_hand_match 'QJ-8o', 'Qd 8c'
+      assert_hand_match 'AK-To', 'As Jd'
+    end
+    
+    should "not match offsuit range" do
+      assert_hand_not_match 'QJ-8o', 'Qc Jc'
+      assert_hand_not_match 'QJ-8o', 'Qh Th'
+      assert_hand_not_match 'QJ-8o', 'Qd 8d'
+      assert_hand_not_match 'AK-To', 'As Js'
+    end
+    
+    should "match pair min" do
+      assert_hand_match 'JJ+', 'Jc Js'
+      assert_hand_match '66+', 'Qc Qh'
+      assert_hand_match 'JJ+', 'Ad Ac'
+    end
+    
+    should "not match pair min" do
+      assert_hand_not_match 'JJ+', 'Tc Ts'
+      assert_hand_not_match '66+', 'Qc Kh'
+      assert_hand_not_match 'AA+', '2d 2c'
+    end
+    
+    should "match face min" do
+      assert_hand_match 'AJ+', 'Ac Js'
+      assert_hand_match 'AQ+', 'Ac Kc'
+      assert_hand_match 'AJ+', 'Ac As'
+      assert_hand_match 'QT+', 'Qc Ts'
+      assert_hand_match 'QT+', 'Qc Qs'
+      assert_hand_not_match 'QT+', 'Qc Ks' # sure? should be matched with KQ+?
+      assert_hand_not_match 'AJ+', 'Ac Ts'
+      assert_hand_not_match 'AJ+', 'Tc Ts'
+    end
+    
+    should "match suited face min" do
+      assert_hand_match 'AJs+', 'Ac Jc'
+      assert_hand_match 'AQs+', 'Ac Kc'
+      assert_hand_not_match 'AJs+', 'Ac As'
+      assert_hand_match 'QTs+', 'Qc Tc'
+      assert_hand_not_match 'QTs+', 'Qc Ts'
+      assert_hand_not_match 'AJs+', 'Ac Qs'
+    end
+    
+    should "match offsuit face min" do
+      assert_hand_match 'AJo+', 'Ac Jd'
+      assert_hand_match 'AQo+', 'Ac Kh'
+      assert_hand_match 'AJo+', 'Ac As'
+      assert_hand_match 'QTo+', 'Qc Td'
+      assert_hand_not_match 'QTo+', 'Qc Tc'
+      assert_hand_not_match 'AJo+', 'Ac Qc'
+    end
+
+    should "match face with 1 gap" do
+      assert_hand_match '89+', '8c 9d'
+      assert_hand_match '89+', '9c Td'
+      assert_hand_match '89+', 'Tc Jd'
+      assert_hand_match '89+', 'Ac Kd'
+      assert_hand_not_match '89+', '8c Td'
+      assert_hand_not_match '89+', 'Tc Td'
+      assert_hand_not_match '89+', '7c 8d'
+    end
+
+    should "match face with 2 gaps" do
+      assert_hand_match '8T+', '8c Td'
+      assert_hand_match '8T+', 'Tc 8d'
+      assert_hand_match '24+', '9c Jd'
+      assert_hand_match '79+', 'Ac Qd'
+      assert_hand_not_match '8T+', '8c 9d'
+      assert_hand_not_match '8T+', 'Tc Td'
+      assert_hand_not_match '8T+', 'Jc Ad'
+      assert_hand_not_match '8T+', '7c 9d'
+    end
+
+    should "match face with many gaps" do
+      assert_hand_match '8J+', '9c Qd'
+      assert_hand_match '8Q+', '9c Kd'
+      assert_hand_match '8K+', 'Ac 9d'
+      assert_hand_not_match '8J+', '7c Td'
+    end
+
+    should "match face gap with suit" do
+      assert_hand_match '89s+', '9c Tc'
+      assert_hand_not_match '89s+', '9c Td'
+      assert_hand_match '89o+', '9c Th'
+      assert_hand_not_match '89o+', '9d Td'
+    end
+  end
+
 end

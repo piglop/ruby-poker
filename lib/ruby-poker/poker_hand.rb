@@ -335,6 +335,66 @@ class PokerHand
   def allow_duplicates
     @@allow_duplicates
   end
+  
+  def match? expression
+    return false if @hand.empty?
+    
+    if expression.is_a? Array
+      return expression.any? { |e| match?(e) }
+    end
+    
+    faces = @hand.map { |card| card.face }.sort.reverse
+    suited = @hand.map { |card| card.suit }.uniq.size == 1
+    case expression
+    when /^(.)(.)(s|o|)$/
+      expression_faces = [$1, $2].map { |face| Card.face_value(face) }.sort.reverse
+      suit_match = $3
+      face_match = (expression_faces == faces)
+      case suit_match
+      when ''
+        face_match
+      when 's'
+        face_match and suited
+      when 'o'
+        face_match and !suited
+      end
+    when /^(.)(.)-(.)(s|o|)/
+      base_face = Card.face_value($1)
+      start_face = Card.face_value($2)
+      end_face = Card.face_value($3)
+      suit_match = $4
+      face_match = (faces.first == base_face and faces.last <= start_face and faces.last >= end_face)
+      case suit_match
+      when ''
+        face_match
+      when 's'
+        face_match and suited
+      when 'o'
+        face_match and !suited
+      end
+    when /^(.)(.)(s|o|)\+$/
+      face1 = Card.face_value($1)
+      face2 = Card.face_value($2)
+      suit_match = $3
+      if face1 == face2
+        face_match = (faces.first == faces.last and faces.first >= face1)
+      elsif face1 > face2
+        face_match = (faces.first == face1 and faces.last >= face2)
+      else
+        face_match = ((faces.first - faces.last) == (face2 - face1) and faces.last >= face1)
+      end
+      case suit_match
+      when ''
+        face_match
+      when 's'
+        face_match and suited
+      when 'o'
+        face_match and !suited
+      end
+    else
+      error "Invalid match: #{expression}"
+    end
+  end
 
   private
 
